@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: 0 100% 50%;    /* Rojo */
+  --secondary: 240 100% 50%; /* Azul */
+  --accent: 120 100% 25%;    /* Verde */
+  --background: 0 0% 0%;     /* Negro */
+  --foreground: 0 0% 100%;   /* Blanco */
+  --muted: 0 0% 20%;
+  --muted-foreground: 0 0% 80%;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-container {
+    @apply mx-auto max-w-md px-4;
+  }
+
+  .mobile-header {
+    @apply fixed top-0 z-50 w-full bg-background/80 backdrop-blur-lg border-b border-muted;
+  }
+
+  .mobile-nav {
+    @apply fixed bottom-0 z-50 w-full bg-background/80 backdrop-blur-lg border-t border-muted;
+  }
+
+  .mobile-content {
+    @apply pt-16 pb-20 min-h-screen;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white rounded-full px-6 py-3 font-medium;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-white rounded-full px-6 py-3 font-medium;
+  }
+
+  .card {
+    @apply bg-muted rounded-2xl p-4 border border-muted;
+  }
+}
