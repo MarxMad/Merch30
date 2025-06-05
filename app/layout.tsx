@@ -20,6 +20,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
+      <head>
+        <link rel="icon" href="/LogomerchW.svg" type="image/svg+xml" />
+      </head>
       <body className={inter.className}>
         <AppKitProvider>
           <AuthProvider>
