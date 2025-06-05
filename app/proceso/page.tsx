@@ -46,18 +46,19 @@ export default function ProcesoPage() {
 
   const producto = productos[claimCode];
   const mensaje = `Acabas de Reclamar Merch exclusiva de ${protocol || "____"} protocolo / empresa. Powered by Merch3 @merch3_`;
-  const url = typeof window !== "undefined" ? window.location.href : "";
 
   const handleClaim = async () => {
     setClaimed(true);
   };
 
   const shareTwitter = () => {
+    const url = window.location.href;
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(mensaje)}&url=${encodeURIComponent(url)}`;
     window.open(twitterUrl, "_blank");
   };
 
   const shareFarcaster = () => {
+    const url = window.location.href;
     const farcasterUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(mensaje + " " + url)}`;
     window.open(farcasterUrl, "_blank");
   };
