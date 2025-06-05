@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from 'react';
 import { HomeSection } from '@/components/sections/home-section';
 
