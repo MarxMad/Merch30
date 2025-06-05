@@ -2,7 +2,7 @@
 
 import { ArrowRight } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
-import GloboInteractivo from "../ui/globo-interactivo";
+import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import Navbar from "@/components/navbar";
 
@@ -41,6 +41,8 @@ const EVENTS = [
   { city: "Dubái", event: "Dubai Crypto Expo", date: "Julio 2026", type: "Web3" },
   { city: "Johannesburgo", event: "ETH Africa", date: "Agosto 2026", type: "Hackathon" },
 ];
+
+const GloboInteractivo = dynamic(() => import("../ui/globo-interactivo"), { ssr: false });
 
 export function HomeSection() {
   const { openAuthModal } = useAuth();
