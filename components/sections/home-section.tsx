@@ -3,7 +3,7 @@
 import { ArrowRight } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import GloboInteractivo from "../ui/globo-interactivo";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/navbar";
 
 const LOCATIONS = [
@@ -45,6 +45,15 @@ const EVENTS = [
 export function HomeSection() {
   const { openAuthModal } = useAuth();
   const [highlight, setHighlight] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return <div>Cargando...</div>; // Placeholder mientras se carga en el cliente
+  }
 
   // Duplicar eventos para efecto de bucle
   const tickerEvents = [...EVENTS, ...EVENTS];
