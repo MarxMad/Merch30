@@ -21,7 +21,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <nav className="fixed top-6 left-1/2 z-50 w-[95vw] max-w-5xl -translate-x-1/2">
+    <nav className="fixed top-6 left-1/2 z-40 w-[95vw] max-w-5xl -translate-x-1/2">
       {/* Desktop navbar */}
       <div className="hidden md:flex items-center justify-between px-8 py-3 bg-[#030330]/90 backdrop-blur-md rounded-2xl shadow-lg border border-[#222]">
         {/* Logo y branding */}
@@ -80,38 +80,48 @@ export default function Navbar() {
       </div>
       {/* Mobile menu overlay */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 bg-[#030330]/95 flex flex-col items-center justify-center gap-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-2xl text-white font-bold hover:text-[#3E3EF4] transition-colors"
+        <div className="fixed inset-0 z-[120] bg-[#030330] bg-opacity-100 backdrop-blur-lg flex items-center justify-start h-full pt-40 pl-20">
+          <div className="relative flex flex-col items-center gap-6 bg-[#18181b] rounded-2xl shadow-2xl border border-[#3E3EF4]/40 px-8 py-10 w-[90vw] max-w-xs">
+            {/* Botón cerrar */}
+            <button
+              className="absolute top-4 right-4 text-white hover:text-[#E71D36] transition-colors"
               onClick={() => setMobileOpen(false)}
+              aria-label="Cerrar menú"
             >
-              {link.label}
-            </Link>
-          ))}
-          {isAuthenticated ? (
-            <button
-              className="px-6 py-3 rounded-xl bg-[#030330] text-white font-semibold border border-[#3E3EF4] hover:bg-[#E71D36] hover:text-white transition-colors shadow"
-              onClick={() => {
-                setMobileOpen(false);
-                signOut();
-              }}
-            >
-              Desconectar ({user?.name || "Wallet"})
+              <X className="w-7 h-7" />
             </button>
-          ) : (
-            <button
-              className="px-6 py-3 rounded-xl bg-[#E71D36] text-white font-bold hover:bg-[#3E3EF4] hover:text-white transition-colors shadow"
-              onClick={() => {
-                setMobileOpen(false);
-                openAuthModal();
-              }}
-            >
-              Conectar Wallet
-            </button>
-          )}
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-2xl text-white font-bold hover:text-[#3E3EF4] transition-colors w-full text-center"
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+            {isAuthenticated ? (
+              <button
+                className="w-full px-6 py-3 rounded-xl bg-[#030330] text-white font-semibold border border-[#3E3EF4] hover:bg-[#E71D36] hover:text-white transition-colors shadow"
+                onClick={() => {
+                  setMobileOpen(false);
+                  signOut();
+                }}
+              >
+                Desconectar ({user?.name || "Wallet"})
+              </button>
+            ) : (
+              <button
+                className="w-full px-6 py-3 rounded-xl bg-[#E71D36] text-white font-bold hover:bg-[#3E3EF4] hover:text-white transition-colors shadow"
+                onClick={() => {
+                  setMobileOpen(false);
+                  openAuthModal();
+                }}
+              >
+                Conectar Wallet
+              </button>
+            )}
+          </div>
         </div>
       )}
     </nav>
