@@ -1,5 +1,6 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Globe from "react-globe.gl";
+import * as THREE from "three";
 
 const LOCATIONS = [
   { name: "Mendoza", lat: -32.8908, lng: -68.8272 },
@@ -57,6 +58,8 @@ const COLORS = {
 
 const GloboInteractivo: React.FC<GloboInteractivoProps> = ({ highlight, color = "red" }) => {
   const globeEl = useRef<any>();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [labelPos, setLabelPos] = useState<{ x: number; y: number } | null>(null);
   const c = COLORS[color];
 
   useEffect(() => {
@@ -83,8 +86,41 @@ const GloboInteractivo: React.FC<GloboInteractivoProps> = ({ highlight, color = 
     }
   }, [highlight]);
 
+  // Calcular la posición 2D del label cuando hay highlight
+  useEffect(() => {
+    if (!highlight || !globeEl.current) {
+      setLabelPos(null);
+      return;
+    }
+    const globe = globeEl.current;
+    const renderer = globe.renderer();
+    const camera = globe.camera();
+    const { width, height } = renderer.getSize(new THREE.Vector2());
+    const loc = LOCATIONS.find((l) => l.name === highlight);
+    if (!loc) return;
+    // Convertir lat/lng a vector 3D
+    const phi = (90 - loc.lat) * (Math.PI / 180);
+    const theta = (loc.lng + 180) * (Math.PI / 180);
+    const r = globe.getGlobeRadius ? globe.getGlobeRadius() : 100;
+    const x = r * Math.sin(phi) * Math.cos(theta);
+    const y = r * Math.cos(phi);
+    const z = r * Math.sin(phi) * Math.sin(theta);
+    const vector = new THREE.Vector3(x, y + 2, z); // +2 para acercar el label al punto
+    vector.project(camera);
+    // Convertir a coordenadas de pantalla
+    const sx = (vector.x * 0.5 + 0.5) * width;
+    const sy = (1 - (vector.y * 0.5 + 0.5)) * height;
+    setLabelPos({ x: sx, y: sy });
+  }, [highlight]);
+
+  // Datos para el label de la ciudad seleccionada
+  const labelData = highlight
+    ? LOCATIONS.filter((l) => l.name === highlight)
+    : [];
+
   return (
     <div
+      ref={containerRef}
       style={{
         width: "100%",
         height: "100%",
@@ -99,6 +135,7 @@ const GloboInteractivo: React.FC<GloboInteractivoProps> = ({ highlight, color = 
         background: "transparent",
         borderRadius: 24,
         overflow: "visible",
+        position: "relative",
       }}
     >
       <Globe
@@ -117,7 +154,6 @@ const GloboInteractivo: React.FC<GloboInteractivoProps> = ({ highlight, color = 
         pointColor={(d: any) => (highlight && d.name === highlight ? c.highlight : c.point)}
         pointAltitude={0.04}
         pointRadius={0.38}
-        pointLabel={(d: any) => d.name}
         arcsData={ARCS}
         arcColor={() => c.arc}
         arcDashLength={0.4}
@@ -127,6 +163,37 @@ const GloboInteractivo: React.FC<GloboInteractivoProps> = ({ highlight, color = 
         arcAltitude={0.22}
         arcDashAnimateTime={3500}
       />
+      {/* Overlay HTML para el label */}
+      {highlight && labelPos && (
+        <div
+          style={{
+            position: "absolute",
+            left: labelPos.x,
+            top: labelPos.y,
+            transform: "translate(-50%, -100%)",
+            pointerEvents: "none",
+            zIndex: 10,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 28,
+              color: "#E71D36",
+              fontWeight: 700,
+              background: "rgba(24,24,27,0.95)",
+              border: "2px solid #3E3EF4",
+              borderRadius: 12,
+              padding: "8px 20px",
+              boxShadow: "0 2px 16px #3E3EF4, 0 0 8px #E71D36",
+              textShadow: "0 2px 8px #000, 0 0 2px #3E3EF4",
+              letterSpacing: 1,
+              whiteSpace: "nowrap",
+            }}
+          >
+            {highlight}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
